@@ -6,6 +6,13 @@
   />
 </p>
 
+<p align="center">
+  <a href="https://pypi.org/project/ibmecstats/"><img alt="PyPI" src="https://img.shields.io/pypi/v/ibmecstats"></a>
+  <a href="https://pypi.org/project/ibmecstats/"><img alt="Python" src="https://img.shields.io/pypi/pyversions/ibmecstats"></a>
+  <a href="https://github.com/carloselcastro/ibmecstats/actions"><img alt="CI" src="https://github.com/carloselcastro/ibmecstats/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/carloselcastro/ibmecstats/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green"></a>
+</p>
+
 # Biblioteca IBMEC Stats
 
 Um pacote Python com funções fundamentais para **Estatística**, **Inferência Estatística** e **Métodos de Previsão**, com **visualizações prontas** usando **seaborn**.
