@@ -1,87 +1,107 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Iterable, Optional, Tuple, Union
+
 import numpy as np
+import pandas as pd
 
-def calcular_estatisticas_descritivas(dados):
+
+ArrayLike1D = Union[pd.Series, np.ndarray, list, tuple]
+
+
+def as_series(x: ArrayLike1D, name: str = "x") -> pd.Series:
     """
-    Calcula e retorna estatísticas descritivas básicas de um conjunto de dados.
-
-    Args:
-        dados (array-like): Um array ou lista de números.
-
-    Returns:
-        dict: Um dicionário contendo n, média, desvio padrão e variância.
+    Converte entrada 1D (list/tuple/ndarray/Series) em pd.Series.
     """
-    dados = np.asarray(dados)
-    media = np.mean(dados)
-    desvio_padrao = np.std(dados, ddof=1)  # ddof=1 para desvio padrão amostral
-    variancia = np.var(dados, ddof=1)    # ddof=1 para variância amostral
-    n = len(dados)
-    return {
-        'n': n,
-        'media': media,
-        'desvio_padrao': desvio_padrao,
-        'variancia': variancia
-    }
+    if isinstance(x, pd.Series):
+        s = x.copy()
+        if s.name is None:
+            s.name = name
+        return s
+    arr = np.asarray(x)
+    if arr.ndim != 1:
+        raise ValueError(f"Esperado vetor 1D; recebido array com ndim={arr.ndim}.")
+    return pd.Series(arr, name=name)
 
-def ordenar_dados(dados):
+
+def dropna_series(x: ArrayLike1D, name: str = "x") -> pd.Series:
     """
-    Retorna os dados ordenados em ordem crescente.
-
-    Args:
-        dados (array-like): Um array ou lista de números.
-
-    Returns:
-        np.ndarray: Um array numpy com os dados ordenados.
+    Converte para Series e remove NaNs.
     """
-    return np.sort(np.asarray(dados))
+    s = as_series(x, name=name)
+    return s.dropna()
 
-def padronizar_dados(dados):
+
+def ensure_datetime_index(
+    y: Union[pd.Series, pd.DataFrame],
+    date_col: Optional[str] = None,
+    freq: Optional[str] = None,
+) -> Union[pd.Series, pd.DataFrame]:
     """
-    Padroniza os dados para terem média 0 e desvio padrão 1 (Z-score).
-
-    Args:
-        dados (array-like): Um array ou lista de números.
-
-    Returns:
-        np.ndarray: Um array numpy com os dados padronizados.
+    Garante que y tenha índice datetime. Aceita:
+      - Series/DataFrame já com DatetimeIndex
+      - DataFrame com uma coluna de data (date_col)
+    Se freq for informado, tenta asfreq(freq).
     """
-    dados = np.asarray(dados)
-    stats = calcular_estatisticas_descritivas(dados)
-    media = stats['media']
-    desvio_padrao = stats['desvio_padrao']
+    obj = y.copy()
 
-    if desvio_padrao == 0:
-        # Evita divisão por zero se todos os dados forem iguais
-        return np.zeros_like(dados)
+    if isinstance(obj, (pd.Series, pd.DataFrame)) and isinstance(obj.index, pd.DatetimeIndex):
+        out = obj
+    elif isinstance(obj, pd.DataFrame) and date_col is not None:
+        if date_col not in obj.columns:
+            raise ValueError(f"date_col='{date_col}' não está nas colunas do DataFrame.")
+        out = obj.copy()
+        out[date_col] = pd.to_datetime(out[date_col])
+        out = out.set_index(date_col).sort_index()
+    else:
+        raise ValueError(
+            "Não foi possível inferir DatetimeIndex. "
+            "Passe um Series/DataFrame com DatetimeIndex ou um DataFrame com date_col."
+        )
 
-    return (dados - media) / desvio_padrao
+    if freq is not None:
+        out = out.asfreq(freq)
+
+    return out
 
 
-from scipy.stats import norm
-
-def lilliefors_critico(n, alpha=0.05, n_sim=100000):
+def train_test_split_time(
+    y: ArrayLike1D,
+    test_size: Union[int, float] = 0.2,
+) -> Tuple[pd.Series, pd.Series]:
     """
-    Calcula e retorna o valor crítico para o teste de Lilliefors.
-    Args:
-        n (int): tamanho de amostra
-        alpha (float): float (nível de significância)
-                       Probabilidade de erro tipo I. Exemplo: alpha=0.05 significa 5% de chance
-                       de rejeitar a hipótese de normalidade quando ela é verdadeira.
-    m_sim
+    Split temporal (sem shuffle). Retorna (train, test).
+
+    test_size:
+      - float (0,1): fração do tamanho total
+      - int >= 1   : número de observações no teste
     """
-    D_vals = []
-    for _ in range(n_sim):
-        sample = np.random.normal(0, 1, n)
-        mu, sigma = np.mean(sample), np.std(sample, ddof=0)
-        z = padronizar_dados(sample)
-        z.sort()
-        F0 = norm.cdf(z)
-        i = np.arange(1, n+1)
-        D = np.max(np.maximum(i/n - F0, F0 - (i-1)/n))
-        D_vals.append(D)
-    return np.quantile(D_vals, 1 - alpha)
+    s = as_series(y, name="y").dropna()
+    n = len(s)
+    if n < 2:
+        raise ValueError("Série muito curta para split temporal.")
 
-def cdf(z):
-    return norm.cdf(z)
+    if isinstance(test_size, float):
+        if not (0.0 < test_size < 1.0):
+            raise ValueError("test_size float deve estar em (0,1).")
+        n_test = int(np.ceil(n * test_size))
+    else:
+        n_test = int(test_size)
 
-def mean(x):
-    return np.mean(x)
+    if n_test <= 0 or n_test >= n:
+        raise ValueError("test_size inválido; precisa deixar pelo menos 1 ponto no treino e 1 no teste.")
+
+    train = s.iloc[: n - n_test]
+    test = s.iloc[n - n_test :]
+    return train, test
+
+@dataclass(frozen=True)
+class ForecastResult:
+    """
+    Resultado padronizado para previsões.
+    """
+    yhat: pd.Series
+    fitted: Optional[pd.Series] = None
+    residuals: Optional[pd.Series] = None
+    info: Optional[dict] = None
