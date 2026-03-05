@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple, Union
-
 import numpy as np
 import pandas as pd
 
@@ -13,7 +11,7 @@ def set_theme(
     context: str = "talk",
     palette: str = "deep",
     font_scale: float = 1.0,
-    rc: Optional[dict] = None,
+    rc: dict | None = None,
 ) -> None:
     """
     Define um tema padrão seaborn para gráficos do pacote.
@@ -25,15 +23,14 @@ def set_theme(
 
 def plot_distribution(
     x,
-    bins: Union[int, str] = "auto",
+    bins: int | str = "auto",
     kde: bool = True,
-    title: Optional[str] = None,
+    title: str | None = None,
 ):
     """
     Histograma + KDE (opcional).
     Retorna Axes.
     """
-    import matplotlib.pyplot as plt
     import seaborn as sns
 
     s = dropna_series(x, name="x").astype(float)
@@ -46,7 +43,7 @@ def plot_distribution(
     return ax
 
 
-def plot_boxplot(x, title: Optional[str] = None):
+def plot_boxplot(x, title: str | None = None):
     """
     Boxplot univariado.
     """
@@ -60,7 +57,7 @@ def plot_boxplot(x, title: Optional[str] = None):
     return ax
 
 
-def plot_qq(x, dist: str = "norm", title: Optional[str] = None):
+def plot_qq(x, dist: str = "norm", title: str | None = None):
     """
     Q-Q plot (via scipy.stats.probplot).
     """
@@ -77,7 +74,7 @@ def plot_qq(x, dist: str = "norm", title: Optional[str] = None):
     return ax
 
 
-def plot_pp(x, dist: str = "norm", title: Optional[str] = None):
+def plot_pp(x, dist: str = "norm", title: str | None = None):
     """
     P-P plot (empírico vs teórico). Para normal, usa mu/sigma estimados.
     """
@@ -109,11 +106,10 @@ def plot_pp(x, dist: str = "norm", title: Optional[str] = None):
     return ax
 
 
-def plot_time_series(y, title: Optional[str] = None):
+def plot_time_series(y, title: str | None = None):
     """
     Série temporal simples.
     """
-    import matplotlib.pyplot as plt
     import seaborn as sns
 
     s = as_series(y, name="y").astype(float).dropna()
@@ -125,7 +121,7 @@ def plot_time_series(y, title: Optional[str] = None):
     return ax
 
 
-def plot_acf_pacf(y, lags: int = 40, title: Optional[str] = None):
+def plot_acf_pacf(y, lags: int = 40, title: str | None = None):
     """
     ACF e PACF (statsmodels). Retorna tupla (ax_acf, ax_pacf).
     """
@@ -157,7 +153,7 @@ def plot_forecast(
     y_train,
     y_test,
     y_pred,
-    title: Optional[str] = None,
+    title: str | None = None,
 ):
     """
     Plota treino, teste e previsão.
@@ -186,7 +182,7 @@ def plot_forecast(
     return ax
 
 
-def plot_residuals(residuals, title: Optional[str] = None):
+def plot_residuals(residuals, title: str | None = None):
     """
     Resíduos ao longo do tempo (linha) + hist (novo Axes em figura separada).
     """

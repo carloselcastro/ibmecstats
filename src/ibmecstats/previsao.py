@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional, Union
-
 import numpy as np
 import pandas as pd
 
@@ -19,7 +17,7 @@ def _make_index_like(y: pd.Series, h: int) -> pd.Index:
     return pd.RangeIndex(start=len(y), stop=len(y) + h, step=1)
 
 
-def naive_forecast(y, h: int, seasonal_period: Optional[int] = None) -> ForecastResult:
+def naive_forecast(y, h: int, seasonal_period: int | None = None) -> ForecastResult:
     """
     Previsão ingênua:
       - sem sazonalidade: repete o último valor
@@ -47,7 +45,12 @@ def naive_forecast(y, h: int, seasonal_period: Optional[int] = None) -> Forecast
 
     fitted = s.shift(1) if seasonal_period is None else s.shift(seasonal_period)
     residuals = s - fitted
-    return ForecastResult(yhat=yhat_s, fitted=fitted, residuals=residuals, info={"model": "naive", "seasonal_period": seasonal_period})
+    return ForecastResult(
+        yhat=yhat_s,
+        fitted=fitted,
+        residuals=residuals,
+        info={"model": "naive", "seasonal_period": seasonal_period},
+    )
 
 
 def drift_forecast(y, h: int) -> ForecastResult:
@@ -74,7 +77,9 @@ def drift_forecast(y, h: int) -> ForecastResult:
 
 def moving_average_forecast(y, h: int, window: int = 3) -> ForecastResult:
     """
-    Previsão via média móvel simples (usa a média dos últimos 'window' valores e repete no horizonte).
+    Previsão via média móvel simples.
+
+    Usa a média dos últimos `window` valores e repete no horizonte.
     """
     s = as_series(y, name="y").astype(float).dropna()
     if h < 1:
@@ -92,13 +97,18 @@ def moving_average_forecast(y, h: int, window: int = 3) -> ForecastResult:
 
     fitted = s.rolling(w).mean().shift(1)
     residuals = s - fitted
-    return ForecastResult(yhat=yhat_s, fitted=fitted, residuals=residuals, info={"model": "moving_average", "window": w})
+    return ForecastResult(
+        yhat=yhat_s,
+        fitted=fitted,
+        residuals=residuals,
+        info={"model": "moving_average", "window": w},
+    )
 
 
 # -----------------------------
 # Suavização Exponencial (statsmodels)
 # -----------------------------
-def ses_forecast(y, h: int, alpha: Optional[float] = None, optimized: bool = True) -> ForecastResult:
+def ses_forecast(y, h: int, alpha: float | None = None, optimized: bool = True) -> ForecastResult:
     """
     Simple Exponential Smoothing (SES).
     Usa statsmodels se disponível.
@@ -138,8 +148,8 @@ def holt_forecast(
     h: int,
     damped_trend: bool = False,
     optimized: bool = True,
-    smoothing_level: Optional[float] = None,
-    smoothing_trend: Optional[float] = None,
+    smoothing_level: float | None = None,
+    smoothing_trend: float | None = None,
 ) -> ForecastResult:
     """
     Holt (nível + tendência), com opção de damped_trend.
@@ -179,8 +189,8 @@ def holt_winters_forecast(
     y,
     h: int,
     seasonal_periods: int,
-    trend: Optional[str] = "add",
-    seasonal: Optional[str] = "add",
+    trend: str | None = "add",
+    seasonal: str | None = "add",
     damped_trend: bool = False,
     optimized: bool = True,
 ) -> ForecastResult:
@@ -194,7 +204,9 @@ def holt_winters_forecast(
     try:
         from statsmodels.tsa.holtwinters import ExponentialSmoothing
     except Exception as e:
-        raise ImportError("Para holt_winters_forecast, instale statsmodels: pip install statsmodels") from e
+        raise ImportError(
+            "Para holt_winters_forecast, instale statsmodels: pip install statsmodels"
+        ) from e
 
     s = as_series(y, name="y").astype(float).dropna()
     if h < 1:

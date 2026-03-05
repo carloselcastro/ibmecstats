@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 
@@ -80,7 +78,7 @@ def mase(
 def forecast_accuracy(
     y_true,
     y_pred,
-    y_train: Optional[object] = None,
+    y_train: object | None = None,
     seasonal_period: int = 1,
 ) -> pd.DataFrame:
     """

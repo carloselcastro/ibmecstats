@@ -12,15 +12,7 @@ from .inferencia import (
     t_test_paired,
     z_test_proportion,
 )
-from .metrics import forecast_accuracy, mae, mase, mape, mse, rmse, smape, wape
-from .previsao import (
-    drift_forecast,
-    holt_forecast,
-    holt_winters_forecast,
-    moving_average_forecast,
-    naive_forecast,
-    ses_forecast,
-)
+from .metrics import forecast_accuracy, mae, mape, mase, mse, rmse, smape, wape
 from .plots import (
     plot_acf_pacf,
     plot_boxplot,
@@ -31,6 +23,14 @@ from .plots import (
     plot_residuals,
     plot_time_series,
     set_theme,
+)
+from .previsao import (
+    drift_forecast,
+    holt_forecast,
+    holt_winters_forecast,
+    moving_average_forecast,
+    naive_forecast,
+    ses_forecast,
 )
 from .utils import ForecastResult, ensure_datetime_index, train_test_split_time
 

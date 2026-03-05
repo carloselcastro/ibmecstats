@@ -1,3 +1,11 @@
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/carloselcastro/carloselcastro.github.io/master/images/ibmecstats.png"
+    alt="IbmecStats"
+    width="260"
+  />
+</p>
+
 # Biblioteca IBMEC Stats
 
 Um pacote Python com funções fundamentais para **Estatística**, **Inferência Estatística** e **Métodos de Previsão**, com **visualizações prontas** usando **seaborn**.

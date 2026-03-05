@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
-
-ArrayLike1D = Union[pd.Series, np.ndarray, list, tuple]
+ArrayLike1D = pd.Series | np.ndarray | list | tuple
 
 
 def as_series(x: ArrayLike1D, name: str = "x") -> pd.Series:
@@ -34,10 +32,10 @@ def dropna_series(x: ArrayLike1D, name: str = "x") -> pd.Series:
 
 
 def ensure_datetime_index(
-    y: Union[pd.Series, pd.DataFrame],
-    date_col: Optional[str] = None,
-    freq: Optional[str] = None,
-) -> Union[pd.Series, pd.DataFrame]:
+    y: pd.Series | pd.DataFrame,
+    date_col: str | None = None,
+    freq: str | None = None,
+) -> pd.Series | pd.DataFrame:
     """
     Garante que y tenha índice datetime. Aceita:
       - Series/DataFrame já com DatetimeIndex
@@ -68,8 +66,8 @@ def ensure_datetime_index(
 
 def train_test_split_time(
     y: ArrayLike1D,
-    test_size: Union[int, float] = 0.2,
-) -> Tuple[pd.Series, pd.Series]:
+    test_size: int | float = 0.2,
+) -> tuple[pd.Series, pd.Series]:
     """
     Split temporal (sem shuffle). Retorna (train, test).
 
@@ -90,18 +88,22 @@ def train_test_split_time(
         n_test = int(test_size)
 
     if n_test <= 0 or n_test >= n:
-        raise ValueError("test_size inválido; precisa deixar pelo menos 1 ponto no treino e 1 no teste.")
+        raise ValueError(
+            "test_size inválido; precisa deixar pelo menos 1 ponto no treino e 1 no teste."
+        )
 
     train = s.iloc[: n - n_test]
     test = s.iloc[n - n_test :]
     return train, test
+
 
 @dataclass(frozen=True)
 class ForecastResult:
     """
     Resultado padronizado para previsões.
     """
+
     yhat: pd.Series
-    fitted: Optional[pd.Series] = None
-    residuals: Optional[pd.Series] = None
-    info: Optional[dict] = None
+    fitted: pd.Series | None = None
+    residuals: pd.Series | None = None
+    info: dict | None = None

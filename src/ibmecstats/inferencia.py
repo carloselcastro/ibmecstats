@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional, Tuple, Union
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .utils import as_series, dropna_series
+from .utils import dropna_series
 
 
 # -----------------------------
@@ -16,7 +16,7 @@ def ci_mean(
     x,
     alpha: float = 0.05,
     method: str = "t",
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     IC para a média.
 
@@ -46,7 +46,7 @@ def ci_proportion(
     n: int,
     alpha: float = 0.05,
     method: str = "wilson",
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     IC para proporção p = k/n.
 
@@ -85,7 +85,7 @@ def ci_proportion(
 # -----------------------------
 # Testes clássicos
 # -----------------------------
-def t_test_1samp(x, mu0: float, alternative: str = "two-sided") -> Dict[str, float]:
+def t_test_1samp(x, mu0: float, alternative: str = "two-sided") -> dict[str, float]:
     """
     Teste t de 1 amostra.
 
@@ -102,7 +102,7 @@ def t_test_ind(
     x2,
     equal_var: bool = False,
     alternative: str = "two-sided",
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Teste t para duas amostras independentes.
     equal_var=False => Welch (recomendado em geral).
@@ -113,7 +113,7 @@ def t_test_ind(
     return {"statistic": float(stat), "pvalue": float(p)}
 
 
-def t_test_paired(x1, x2, alternative: str = "two-sided") -> Dict[str, float]:
+def t_test_paired(x1, x2, alternative: str = "two-sided") -> dict[str, float]:
     """
     Teste t pareado.
     """
@@ -131,7 +131,7 @@ def z_test_proportion(
     p0: float,
     alternative: str = "two-sided",
     continuity: bool = True,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Teste z para proporção.
 
@@ -166,7 +166,7 @@ def z_test_proportion(
     return {"z": float(z), "pvalue": float(p), "phat": float(phat)}
 
 
-def chi2_gof(observed, expected=None) -> Dict[str, float]:
+def chi2_gof(observed, expected=None) -> dict[str, float]:
     """
     Qui-quadrado de aderência (GOF).
     observed: contagens observadas
@@ -187,7 +187,7 @@ def chi2_gof(observed, expected=None) -> Dict[str, float]:
     return {"statistic": float(stat), "pvalue": float(p), "df": float(df)}
 
 
-def chi2_independence(table, correction: bool = True) -> Dict[str, float]:
+def chi2_independence(table, correction: bool = True) -> dict[str, float]:
     """
     Qui-quadrado de independência em tabela de contingência.
     """
@@ -196,7 +196,7 @@ def chi2_independence(table, correction: bool = True) -> Dict[str, float]:
     return {"statistic": float(stat), "pvalue": float(p), "df": float(df)}
 
 
-def anova_oneway(*groups) -> Dict[str, float]:
+def anova_oneway(*groups) -> dict[str, float]:
     """
     ANOVA one-way (um fator).
     """
@@ -255,8 +255,8 @@ def bootstrap_ci(
     statfunc: Callable[[np.ndarray], float] = np.mean,
     alpha: float = 0.05,
     n_boot: int = 10000,
-    random_state: Optional[int] = None,
-) -> Dict[str, float]:
+    random_state: int | None = None,
+) -> dict[str, float]:
     """
     IC bootstrap percentil para uma estatística (ex.: média, mediana).
 
