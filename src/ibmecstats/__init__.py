@@ -1,15 +1,25 @@
 from .descritiva import correlation_matrix, freq_table, iqr_outliers, summary_stats
 from .inferencia import (
     anova_oneway,
+    bartlett_homoscedasticity,
     bootstrap_ci,
+    chi2_homogeneity,
     chi2_gof,
     chi2_independence,
+    ci_mean_diff,
     ci_mean,
+    ci_proportion_diff,
     ci_proportion,
+    ci_variance,
+    cochran_c_test,
+    correlation_test,
+    f_test_variances,
+    jarque_bera_test,
     normality_tests,
     t_test_1samp,
     t_test_ind,
     t_test_paired,
+    z_test_2proportions,
     z_test_proportion,
 )
 from .metrics import forecast_accuracy, mae, mape, mase, mse, rmse, smape, wape
@@ -25,12 +35,22 @@ from .plots import (
     set_theme,
 )
 from .previsao import (
+    autoregressive_forecast,
     drift_forecast,
     holt_forecast,
     holt_winters_forecast,
     moving_average_forecast,
     naive_forecast,
     ses_forecast,
+    trend_projection_forecast,
+)
+from .regressao import (
+    add_dummy_variables,
+    best_subset_selection,
+    model_selection,
+    ols_diagnostics,
+    ols_fit,
+    ols_predict,
 )
 from .utils import ForecastResult, ensure_datetime_index, train_test_split_time
 
@@ -46,23 +66,42 @@ __all__ = [
     "correlation_matrix",
     # inferencia
     "ci_mean",
+    "ci_mean_diff",
     "ci_proportion",
+    "ci_proportion_diff",
+    "ci_variance",
     "t_test_1samp",
     "t_test_ind",
     "t_test_paired",
     "z_test_proportion",
+    "z_test_2proportions",
     "chi2_gof",
     "chi2_independence",
+    "chi2_homogeneity",
     "anova_oneway",
+    "bartlett_homoscedasticity",
+    "cochran_c_test",
+    "correlation_test",
+    "f_test_variances",
+    "jarque_bera_test",
     "normality_tests",
     "bootstrap_ci",
     # previsao
     "naive_forecast",
     "drift_forecast",
     "moving_average_forecast",
+    "trend_projection_forecast",
     "ses_forecast",
     "holt_forecast",
     "holt_winters_forecast",
+    "autoregressive_forecast",
+    # regressao
+    "add_dummy_variables",
+    "ols_fit",
+    "ols_predict",
+    "ols_diagnostics",
+    "best_subset_selection",
+    "model_selection",
     # metrics
     "mae",
     "mse",
