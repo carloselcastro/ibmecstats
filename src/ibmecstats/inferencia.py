@@ -216,13 +216,14 @@ def anova_oneway(*groups) -> dict[str, float]:
 
 def bartlett_homoscedasticity(*groups) -> dict[str, float]:
     """
-    Teste de Bartlett para homocedasticidade entre grupos.
+    Teste de Bartlett para homocedasticidade (igualdade de variâncias).
     """
-    clean = [dropna_series(g).values for g in groups]
+    clean = [dropna_series(g).astype(float).values for g in groups]
     if len(clean) < 2:
-        raise ValueError("Informe pelo menos dois grupos para o teste de Bartlett.")
+        raise ValueError("Forneça pelo menos dois grupos para o teste de Bartlett.")
+
     stat, p = stats.bartlett(*clean)
-    return {"statistic": float(stat), "pvalue": float(p)}
+    return {"statistic": float(stat), "pvalue": float(p), "df": float(len(clean) - 1)}
 
 
 def cochran_c_test(
