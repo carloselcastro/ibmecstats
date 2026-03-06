@@ -367,9 +367,13 @@ def autoregressive_forecast(
     if len(s) <= p + 1:
         raise ValueError("Serie muito curta para o numero de lags informado.")
     if seasonal:
-        raise NotImplementedError("seasonal=True ainda nao esta disponivel para autoregressive_forecast.")
+        raise NotImplementedError(
+            "seasonal=True ainda nao esta disponivel para autoregressive_forecast."
+        )
     if period is not None:
-        raise NotImplementedError("period nao se aplica na implementacao atual de autoregressive_forecast.")
+        raise NotImplementedError(
+            "period nao se aplica na implementacao atual de autoregressive_forecast."
+        )
 
     yv = s.values.astype(float)
     mu = float(np.mean(yv)) if trend == "c" else 0.0

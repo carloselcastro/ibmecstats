@@ -1,6 +1,7 @@
-import ibmecstats as ibs
 import numpy as np
 import pytest
+
+import ibmecstats as ibs
 
 
 def test_ci_mean():

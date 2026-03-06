@@ -233,7 +233,12 @@ def ols_diagnostics(model: OLSModel) -> dict[str, float]:
     }
 
 
-def _fit_with_features(y: pd.Series, x: pd.DataFrame, features: list[str], add_constant: bool = True):
+def _fit_with_features(
+    y: pd.Series,
+    x: pd.DataFrame,
+    features: list[str],
+    add_constant: bool = True,
+):
     x_sub = x[features].copy()
     return ols_fit(y, x_sub, add_constant=add_constant)
 

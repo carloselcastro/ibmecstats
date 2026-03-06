@@ -1,6 +1,7 @@
-import ibmecstats as ibs
 import pandas as pd
 import pytest
+
+import ibmecstats as ibs
 
 
 def test_summary_stats_basic():

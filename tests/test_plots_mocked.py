@@ -1,5 +1,6 @@
-import ibmecstats.plots as pl
 import pytest
+
+import ibmecstats.plots as pl
 
 
 class _DummyAxes:

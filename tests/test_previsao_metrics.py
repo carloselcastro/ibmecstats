@@ -1,6 +1,7 @@
-import ibmecstats as ibs
 import pandas as pd
 import pytest
+
+import ibmecstats as ibs
 
 
 def test_naive_forecast_len():
