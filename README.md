@@ -210,3 +210,20 @@ print(res.yhat)
 * `plot_acf_pacf(y, lags=40, title=None)`: ACF/PACF (requer statsmodels).
 * `plot_forecast(y_train, y_test, y_pred, title=None)`: gráfico de treino, teste e previsão.
 * `plot_residuals(residuals, title=None)`: diagnóstico visual de resíduos.
+
+---
+
+## Alunos Colaboradores
+
+Este projeto contou com a contribuição dos seguintes alunos:
+
+* [Beatriz Ribeiro](https://github.com/biaribeirom)
+* [Caio Jardim](https://github.com/Caio-AJ)
+* [Gabriel Pow](https://github.com/GabrielPow)
+* [Hugo Filho](https://github.com/hugotfilho)
+* [Juliane Ribeiro](https://github.com/Julianeoliveira005)
+* [Paulo Octavio](https://github.com/Opauloctavio)
+* [Pedro Pintor](https://github.com/Opauloctavio)
+
+
+
